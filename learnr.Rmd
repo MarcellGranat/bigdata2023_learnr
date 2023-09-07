@@ -26,11 +26,14 @@ display: none;
 ```
 
 ```{r setup, include=FALSE}
-library(learnr)
-library(learnrhash)
-library(tidyverse)
-library(gradethis)
-library(shinyalert)
+if (!require(pacman)) {
+  install.packages("pacman")
+}
+pacman::p_load(learnr)
+pacman::p_load_gh("rundel/learnrhash")
+pacman::p_load(tidyverse)
+pacman::p_load(gradethis)
+pacman::p_load(shinyalert)
 
 grader <- function(solution) {
   grade_this({
