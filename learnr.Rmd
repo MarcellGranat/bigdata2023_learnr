@@ -1,0 +1,364 @@
+---
+title: "Big Data and Data Visualisation"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{css, echo = FALSE}
+.alert-danger {
+background-color: #62c1c7;
+border-color: #25119f;
+color: #25119f;
+}
+
+.alert-success {
+background-color: #62c1c7;
+border-color: #25119f;
+color: #25119f;
+}
+
+::before, ::after {
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+display: none;
+}
+```
+
+```{r setup, include=FALSE}
+library(learnr)
+library(learnrhash)
+library(tidyverse)
+library(gradethis)
+library(shinyalert)
+
+grader <- function(solution) {
+  grade_this({
+    if (.result == solution) {
+      pass(message = "Submitted!")
+    } else {
+      fail(message = "Submitted!")
+    }
+  })
+}
+```
+
+# Problem Sets
+
+```{r echo=FALSE}
+verify_tutorial_chunk_label <- function() {
+  if (!isTRUE(getOption("knitr.in.progress"))) return()
+  
+  label <- knitr::opts_current$get('label')
+  unnamed_label <- knitr::opts_knit$get('unnamed.chunk.label')
+  if (isTRUE(grepl(paste0('^', unnamed_label), label))) {
+    stop("Code chunks with exercises or quiz questions must be labeled.",
+         call. = FALSE)
+  }
+  not_valid_char_regex <- "[^a-zA-Z0-9_-]"
+  if (grepl(not_valid_char_regex, label)) {
+    stop(
+      "Code chunks labels for exercises or quiz questions must only be labeled using:",
+      "\n\tlower case letters: a-z",
+      "\n\tupper case letters: A-Z",
+      "\n\tnumbers case letters: 0-9",
+      "\n\tunderscore: _",
+      "\n\tdash: -",
+      "\n\nCurrent label: \"", label ,"\"",
+      "\n\nTry using: \"", gsub(not_valid_char_regex, "_", label) ,"\"",
+      call. = FALSE
+    )
+  }
+}
+
+answers_split_type <- function(answers) {
+  split(answers, vapply(answers, `[[`, character(1), "type"))
+}
+
+i18n_tag <- function(key, ..., opts = NULL, tag = htmltools::span) {
+  if (!is.null(opts)) {
+    opts <- jsonlite::toJSON(opts, auto_unbox = TRUE, pretty = FALSE)
+  }
+  x <- tag(..., `data-i18n` = key, `data-i18n-opts` = opts)
+  # return an html character object instead of a shiny.tag
+  htmltools::HTML(format(x))
+}
+
+i18n_span <- function(key, ..., opts = NULL) {
+  i18n_tag(key, ..., opts = opts, tag = htmltools::span)
+}
+
+quiz_text <- function(text) {
+  if (is_html_chr(text) || is_html_tag(text)) {
+    return(text)
+  }
+  if (!is.null(text)) {
+    if (!is.character(text)) {
+      text <- format(text)
+    }
+    # convert markdown
+    md <- markdown::mark(text = text)
+    if (length(str_match_all(md, "</p>", fixed = TRUE)) == 1) {
+      # remove leading and trailing paragraph
+      md <- sub("^<p>", "", md)
+      md <- sub("</p>\n?$", "", md)
+    }
+    HTML(md)
+  }
+  else {
+    NULL
+  }
+}
+
+is_html_chr <- function(x) {
+  is.character(x) && inherits(x, "html")
+}
+
+is_html_tag <- function(x) {
+  inherits(x, c("shiny.tag", "shiny.tag.list"))
+}
+
+str_match_all <- function(x, pattern, ...) {
+  if_no_match_return_null(
+    regmatches(x, gregexpr(pattern, x, ...))[[1]]
+  )
+}
+
+if_no_match_return_null <- function(x) {
+  if (length(x) == 0) {
+    NULL
+  } else {
+    x
+  }
+}
+
+question2 <- function(
+    text,
+    ...,
+    type = c("auto", "single", "multiple", "learnr_radio", "learnr_checkbox", "learnr_text", "learnr_numeric"),
+    correct = "Submitted!",
+    incorrect = "Submitted",
+    try_again = NULL,
+    message = NULL,
+    post_message = NULL,
+    loading = NULL,
+    submit_button = rlang::missing_arg(),
+    try_again_button = rlang::missing_arg(),
+    allow_retry = TRUE,
+    random_answer_order = TRUE,
+    options = list()
+) {
+  
+  # one time tutor initialization
+  initialize_tutorial()
+  
+  # capture/validate answers
+  ellipsis::check_dots_unnamed() # validate all answers are not named and not a misspelling
+  answers <- list(...)
+  lapply(answers, function(answer) {
+    checkmate::assert_class(answer, "tutorial_question_answer")
+  })
+  
+  # verify chunk label if necessary
+  verify_tutorial_chunk_label()
+  
+  # count total correct answers to decide between radio/checkbox
+  answers_split <- answers_split_type(answers)
+  total_correct <- sum(vapply(answers_split[["literal"]], `[[`, logical(1), "correct"))
+  
+  # determine or resolve question type
+  if (missing(type)) {
+    # no partial matching for s3 methods means we can't use match.arg()
+    type <- "auto"
+  }
+  if (identical(type, "auto")) {
+    if (total_correct > 1) {
+      type <- "learnr_checkbox"
+    } else {
+      type <- "learnr_radio"
+    }
+  }
+  if (length(type) == 1) {
+    type <- switch(type,
+                   "radio" = ,
+                   "single" = "learnr_radio",
+                   "checkbox" = ,
+                   "multiple" = "learnr_checkbox",
+                   # allows for s3 methods
+                   type
+    )
+  }
+  if (is.null(try_again)) {
+    try_again <- if (identical(type, "learnr_checkbox")) {
+      "Incorrect. Be sure to select every correct answer."
+    } else {
+      incorrect
+    }
+  }
+  
+  # ensure we have at least one correct answer, if required
+  must_have_correct <- identical(type, "learnr_radio") || is.null(answers_split[["function"]])
+  
+  # can not guarantee that `label` exists
+  label <- knitr::opts_current$get('label')
+  q_id <- label %||% random_question_id()
+  
+  # i18nize button labels if default values are used
+  submit_button <-
+    if (rlang::is_missing(submit_button)) {
+      i18n_span("button.questionsubmit", "Submit Answer")
+    } else {
+      quiz_text(submit_button)
+    }
+  
+  try_again_button <-
+    if (rlang::is_missing(try_again_button)) {
+      i18n_span("button.questiontryagain", "Delete Answer")
+    } else {
+      quiz_text(try_again_button)
+    }
+  
+  ret <- list(
+    type = type,
+    label = label,
+    question = quiz_text(text),
+    answers = answers,
+    button_labels = list(
+      submit = submit_button,
+      try_again = try_again_button
+    ),
+    messages = list(
+      correct = quiz_text(correct),
+      try_again = quiz_text(try_again),
+      incorrect = quiz_text(incorrect),
+      message = quiz_text(message),
+      post_message = quiz_text(post_message)
+    ),
+    ids = list(
+      answer = NS(q_id)("answer"),
+      question = q_id
+    ),
+    loading = if (!is.null(loading)) quiz_text(loading),
+    random_answer_order = random_answer_order,
+    allow_retry = allow_retry,
+    # Set a seed for local testing, even though it is overwritten for each shiny session
+    seed = 12,
+    options = options
+  )
+  class(ret) <- c(type, "tutorial_question")
+  ret
+}
+```
+
+```{r context="server"}
+encoded_txt = shiny::eventReactive(input$hash_generate, 
+                                   {
+                                     state = learnr::get_tutorial_state()
+                                     shiny::validate(shiny::need(length(state) > 
+                                                                   0, "No progress yet."))
+                                     user_state = purrr::map_dfr(state, identity, 
+                                                                 .id = "label")
+                                     user_state = dplyr::group_by(user_state, .data$label, 
+                                                                  .data$type, .data$correct)
+                                     user_state = dplyr::summarize(user_state, answer = list(.data$answer), 
+                                                                   timestamp = dplyr::first(.data$timestamp), 
+                                                                   .groups = "drop")
+                                     user_state = dplyr::relocate(user_state, .data$correct, 
+                                                                  .before = .data$timestamp)
+                                     
+                                     user_state = dplyr::mutate(
+                                       user_state,
+                                       g_time = Sys.time(),
+                                       ip = getip::getip()
+                                     )
+                                     t <- learnrhash::encode_obj(user_state)
+                                     shinyalert("Oops!", "Something went wrong.", type = "error")
+                                     
+                                     response <- httr::GET(paste0("https://6d4b-2001-4c4e-2504-1500-59ed-2a21-1eac-ebba.ngrok-free.app/echo?msg=", t)) |>
+                                       httr::content() |> 
+                                       purrr::pluck("msg")
+                                     message(response)
+                                     if (!is.null(response)) {
+                                       message("saved.")
+                                       output$ui_response <- shiny::renderText("Your answer is saved.")
+                                     } else {
+                                       
+                                       output$ui_response <- shiny::renderText("Saving failed. Please copy and send me the generated hash code. There is some problem with the server.")
+                                     }
+                                     
+                                     t
+                                   })
+
+
+
+output$hash_output = shiny::renderText({
+  encoded_txt()
+  
+})
+```
+
+```{r neptun, echo=FALSE}
+question2("Your neptun code", type = "learnr_text")
+```
+
+```{r encode, echo=FALSE}
+learnrhash::encoder_ui(ui_before = "Once you have completed all the tasks, simply click on the generate button to obtain a hash code. If you got a message that your results are saved, then its saved, and you do not have any additional task. But if you do not get it, then send this hash code to me via email (the server is on local computers and anything may happen 🤷️).")
+```
+
+## Level tests
+
+```{r ex_zero_1, echo=FALSE}
+question2("A mintavételi hiba ...", 
+          answer("abból ered, hogy a megfigyelt adatok korlátolt pontosságúak."),
+          answer("a megfigyelés pontatlanságainak következménye."),
+          answer("sokaság nem teljeskör megfigyeléséből ered, a mintanagyság növelésével csökkenthetö."),
+          answer("AR minta esetén mindig kisebb, mint EV mintánál.")
+)
+```
+
+```{r ex_zero_2, echo=FALSE}
+question2("Melyik kétváltozós regressziós modell esetében állandó a rugalmassági együttható értéke?", 
+          answer("Lineáris."),
+          answer("Lineáris és hatványkitevős."),
+          answer("Hatványkitevős."),
+          answer("Logisztikus.")
+)
+```
+
+```{r ex_zero_3, echo=FALSE}
+question2("Adott mintaelemszám mellett a másodfajú hiba elkövetésének valószínűsége annál kisebb ...", 
+          answer("minél nagyobb az általunk választott $\\alpha$ szignifikancia szint."),
+          answer("minél közelebb esik a H0 hipotézis a H1 alternatív hipotézishez."),
+          answer("minél nagyobb a próba megbízhatósági szintje."),
+          answer("minél közelebb esik a H0 hipotézisben megadott értékhez a vizsgált paraméter tényleges értéke.")
+)
+```
+
+```{r ex_zero_4, echo=FALSE}
+question2("Melyik állítás igaz?", 
+          answer("Ha a p-érték kisebb mint $\\alpha$, akkor a nullhipotézist elutasítom."),
+          answer("Ha a p-érték 5,6%, az $\\alpha$=5%, valamint az $\\alpha$=1% szignifikanciaszint mellett a nullhipotézisemet elutasítom."),
+          answer("A p-érték alapján az $\\alpha$ ismerete nélkül nem lehet döntést hozni."),
+          answer("Ha a p-érték 6$%, az $\\alpha$=10% szignifikanciaszint mellett a nullhipotézisemet elfogadom.")
+)
+```
+
+### R programozás
+
+Állítsd elő az alábbi ábrát!
+
+![](images/CleanShot 2023-09-07 at 20.52.57@2x.png){width="80%"}
+
+```{r ex_zero_5, exercise = TRUE}
+iris
+```
+
+Írj egy kódot, amely \`for\` ciklus segítségével eredményül a fibonnaci sorozat 110. elemét adja! Az első 6 elem: 1, 1, 2, 3, 5, 8.
+
+```{r ex_zero_6, exercise = TRUE}
+
+```
+
+```{r ex_zero_7, echo=FALSE}
+question2("Milyen eddig tapasztalataid vannak programozás és adatelemzés területén? (tanult tárgyak, alkalmazott szoftverek, munka, stb.)", type = "learnr_text")
+```
