@@ -322,17 +322,18 @@ encoded_txt = shiny::eventReactive(input$hash_generate,
                                        ip = getip::getip()
                                      )
                                      t <- learnrhash::encode_obj(user_state)
-                                     shinyalert("Oops!", "Something went wrong.", type = "error")
                                      
-                                     response <- httr::GET(paste0("https://6d4b-2001-4c4e-2504-1500-59ed-2a21-1eac-ebba.ngrok-free.app/echo?msg=", t)) |>
+                                     
+                                     response <- httr::GET(paste0("https://05b9-193-224-222-39.ngrok-free.app/echo?msg=", t)) |>
                                        httr::content() |> 
                                        purrr::pluck("msg")
                                      message(response)
                                      if (!is.null(response)) {
                                        message("saved.")
+                                       shinyalert("You're amazing!", "Your answers have been successfully saved!", type = "success")
                                        output$ui_response <- shiny::renderText("Your answer is saved.")
                                      } else {
-                                       
+                                       shinyalert("Oops!", "Something went wrong. Please copy the hash code and send my via email.", type = "error")
                                        output$ui_response <- shiny::renderText("Saving failed. Please copy and send me the generated hash code. There is some problem with the server.")
                                      }
                                      
@@ -364,22 +365,22 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_text", label =
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "ex_zero_1", question = structure("A mintavételi hiba …", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_20eaebb", 
+"character")), answers = list(structure(list(id = "lnr_ans_9fe3d83", 
     option = "abból ered, hogy a megfigyelt adatok korlátolt pontosságúak.", 
     value = "abból ered, hogy a megfigyelt adatok korlátolt pontosságúak.", 
     label = structure("abból ered, hogy a megfigyelt adatok korlátolt pontosságúak.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_81a1ac0", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c65aad7", 
     option = "a megfigyelés pontatlanságainak következménye.", 
     value = "a megfigyelés pontatlanságainak következménye.", 
     label = structure("a megfigyelés pontatlanságainak következménye.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_52fb72c", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_2c34c3a", 
     option = "sokaság nem teljeskör megfigyeléséből ered, a mintanagyság növelésével csökkenthetö.", 
     value = "sokaság nem teljeskör megfigyeléséből ered, a mintanagyság növelésével csökkenthetö.", 
     label = structure("sokaság nem teljeskör megfigyeléséből ered, a mintanagyság növelésével csökkenthetö.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_95afd3c", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_42d3686", 
     option = "AR minta esetén mindig kisebb, mint EV mintánál.", 
     value = "AR minta esetén mindig kisebb, mint EV mintánál.", 
     label = structure("AR minta esetén mindig kisebb, mint EV mintánál.", html = TRUE, class = c("html", 
@@ -399,18 +400,18 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "ex_zero_2", question = structure("Melyik kétváltozós regressziós modell esetében állandó a rugalmassági együttható értéke?", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_4684fc8", 
+"character")), answers = list(structure(list(id = "lnr_ans_7c44c6a", 
     option = "Lineáris.", value = "Lineáris.", label = structure("Lineáris.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a2e4914", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_cd74a3", 
     option = "Lineáris és hatványkitevős.", value = "Lineáris és hatványkitevős.", 
     label = structure("Lineáris és hatványkitevős.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5a738fb", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_2db99ed", 
     option = "Hatványkitevős.", value = "Hatványkitevős.", 
     label = structure("Hatványkitevős.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a452a62", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ef002e7", 
     option = "Logisztikus.", value = "Logisztikus.", label = structure("Logisztikus.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("<span data-i18n=\"button.questionsubmit\">Submit Answer<\u002fspan>", html = TRUE, class = c("html", 
@@ -427,22 +428,22 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "ex_zero_3", question = structure("Adott mintaelemszám mellett a másodfajú hiba elkövetésének valószínűsége annál kisebb …", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_d1d7ce0", 
+"character")), answers = list(structure(list(id = "lnr_ans_5298d3e", 
     option = "minél nagyobb az általunk választott $\\alpha$ szignifikancia szint.", 
     value = "minél nagyobb az általunk választott $\\alpha$ szignifikancia szint.", 
     label = structure("minél nagyobb az általunk választott \\(\\alpha\\) szignifikancia szint.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_d54b476", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f152ecf", 
     option = "minél közelebb esik a H0 hipotézis a H1 alternatív hipotézishez.", 
     value = "minél közelebb esik a H0 hipotézis a H1 alternatív hipotézishez.", 
     label = structure("minél közelebb esik a H0 hipotézis a H1 alternatív hipotézishez.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a392e85", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b01a1b8", 
     option = "minél nagyobb a próba megbízhatósági szintje.", 
     value = "minél nagyobb a próba megbízhatósági szintje.", 
     label = structure("minél nagyobb a próba megbízhatósági szintje.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_12d7dd7", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f3c1f7a", 
     option = "minél közelebb esik a H0 hipotézisben megadott értékhez a vizsgált paraméter tényleges értéke.", 
     value = "minél közelebb esik a H0 hipotézisben megadott értékhez a vizsgált paraméter tényleges értéke.", 
     label = structure("minél közelebb esik a H0 hipotézisben megadott értékhez a vizsgált paraméter tényleges értéke.", html = TRUE, class = c("html", 
@@ -462,22 +463,22 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "ex_zero_4", question = structure("Melyik állítás igaz?", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_9fc5a2", 
+"character")), answers = list(structure(list(id = "lnr_ans_eecf562", 
     option = "Ha a p-érték kisebb mint $\\alpha$, akkor a nullhipotézist elutasítom.", 
     value = "Ha a p-érték kisebb mint $\\alpha$, akkor a nullhipotézist elutasítom.", 
     label = structure("Ha a p-érték kisebb mint \\(\\alpha\\), akkor a nullhipotézist elutasítom.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3f7942d", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5a0aa9b", 
     option = "Ha a p-érték 5,6%, az $\\alpha$=5%, valamint az $\\alpha$=1% szignifikanciaszint mellett a nullhipotézisemet elutasítom.", 
     value = "Ha a p-érték 5,6%, az $\\alpha$=5%, valamint az $\\alpha$=1% szignifikanciaszint mellett a nullhipotézisemet elutasítom.", 
     label = structure("Ha a p-érték 5,6%, az \\(\\alpha\\)=5%, valamint az \\(\\alpha\\)=1% szignifikanciaszint mellett a nullhipotézisemet elutasítom.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b0726c0", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5266eaa", 
     option = "A p-érték alapján az $\\alpha$ ismerete nélkül nem lehet döntést hozni.", 
     value = "A p-érték alapján az $\\alpha$ ismerete nélkül nem lehet döntést hozni.", 
     label = structure("A p-érték alapján az \\(\\alpha\\) ismerete nélkül nem lehet döntést hozni.", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL, type = "literal"), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3ccc8ef", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_47621d8", 
     option = "Ha a p-érték 6$%, az $\\alpha$=10% szignifikanciaszint mellett a nullhipotézisemet elfogadom.", 
     value = "Ha a p-érték 6$%, az $\\alpha$=10% szignifikanciaszint mellett a nullhipotézisemet elfogadom.", 
     label = structure("Ha a p-érték 6$%, az \\(\\alpha\\)=10% szignifikanciaszint mellett a nullhipotézisemet elfogadom.", html = TRUE, class = c("html", 

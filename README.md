@@ -6,6 +6,12 @@
 ```{r echo=TRUE, eval=FALSE}
 # install.packages("git2r")
 # install.packages("rmarkdown")
+# install.packages("learnr")
+# install.packages("devtools")
+# devtools::install_github("rundel/learnrhash")
+# install.packages("tidyverse")
+# install.packages("gradethis")
+# install.packages("shinyalert")
 git2r::clone(url = "https://github.com/MarcellGranat/bigdata2023_learnr.git", local_path = "repo")
 rmarkdown::run("repo/learnr.Rmd")
 ```

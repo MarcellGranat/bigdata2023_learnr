@@ -26,14 +26,11 @@ display: none;
 ```
 
 ```{r setup, include=FALSE}
-if (!require(pacman)) {
-  install.packages("pacman")
-}
-pacman::p_load(learnr)
-pacman::p_load_gh("rundel/learnrhash")
-pacman::p_load(tidyverse)
-pacman::p_load(gradethis)
-pacman::p_load(shinyalert)
+library(learnr)
+library(learnrhash)
+library(tidyverse)
+library(gradethis)
+library(shinyalert)
 
 grader <- function(solution) {
   grade_this({
@@ -275,17 +272,18 @@ encoded_txt = shiny::eventReactive(input$hash_generate,
                                        ip = getip::getip()
                                      )
                                      t <- learnrhash::encode_obj(user_state)
-                                     shinyalert("Oops!", "Something went wrong.", type = "error")
                                      
-                                     response <- httr::GET(paste0("https://6d4b-2001-4c4e-2504-1500-59ed-2a21-1eac-ebba.ngrok-free.app/echo?msg=", t)) |>
+                                     
+                                     response <- httr::GET(paste0("https://05b9-193-224-222-39.ngrok-free.app/echo?msg=", t)) |>
                                        httr::content() |> 
                                        purrr::pluck("msg")
                                      message(response)
                                      if (!is.null(response)) {
                                        message("saved.")
+                                       shinyalert("You're amazing!", "Your answers have been successfully saved!", type = "success")
                                        output$ui_response <- shiny::renderText("Your answer is saved.")
                                      } else {
-                                       
+                                       shinyalert("Oops!", "Something went wrong. Please copy the hash code and send my via email.", type = "error")
                                        output$ui_response <- shiny::renderText("Saving failed. Please copy and send me the generated hash code. There is some problem with the server.")
                                      }
                                      
@@ -350,7 +348,7 @@ question2("Melyik állítás igaz?",
 
 Állítsd elő az alábbi ábrát!
 
-![](images/CleanShot 2023-09-07 at 20.52.57@2x.png){width="80%"}
+![](images/CleanShot%202023-09-07%20at%2020.52.57@2x.png){width="80%"}
 
 ```{r ex_zero_5, exercise = TRUE}
 iris
