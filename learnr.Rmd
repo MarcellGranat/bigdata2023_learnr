@@ -274,7 +274,7 @@ encoded_txt = shiny::eventReactive(input$hash_generate,
                                      t <- learnrhash::encode_obj(user_state)
                                      
                                      
-                                     response <- httr::GET(paste0("https://05b9-193-224-222-39.ngrok-free.app/echo?msg=", t)) |>
+                                     response <- httr::GET(paste0("https://de6c-193-224-222-18.ngrok-free.app/echo?msg=", t)) |>
                                        httr::content() |> 
                                        purrr::pluck("msg")
                                      message(response)
@@ -363,3 +363,31 @@ iris
 ```{r ex_zero_7, echo=FALSE}
 question2("Milyen eddig tapasztalataid vannak programozás és adatelemzés területén? (tanult tárgyak, alkalmazott szoftverek, munka, stb.)", type = "learnr_text")
 ```
+
+## Problem Set 1
+
+Készíts egy függvényt, amely while ciklus segítsével megadja a fibonacci sorozat első `x` páros elemét. Add meg a függvény segítsével az első 5 páros elemet (ezt kell válaszul látnod, a 0 beleszámít). [3 pont]
+
+```{r ps1_1, exercise = TRUE}
+fibonacci <- c(0, 1)
+```
+
+```{r ps1_2, echo=FALSE}
+question2("Mit mutat meg a dobozábra felső farka?", 
+          answer("Az adatsor maximumát."),
+          answer("A felső kvartilist."),
+          answer("A felső kvartilis és az interkvartilis terjedelem másfélszeresének összegét."),
+          answer("A mediánt.")
+)
+```
+
+```{r ps1_3, echo=FALSE}
+question2("Melyik a hamis?", 
+          answer("A `lapply` függvény használható data.frame típusú adaton is."),
+          answer("Az `apply` soronként vagy oszloponként végzi el a megadott műveletet."),
+          answer("Lehet fibonacci sorozatot készíteni `lapply` segítségével.")
+)
+```
+
+
+
