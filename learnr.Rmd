@@ -41,6 +41,8 @@ grader <- function(solution) {
     }
   })
 }
+
+api_link <- "https://dc22-193-224-222-18.ngrok-free.app"
 ```
 
 # Problem Sets
@@ -274,7 +276,7 @@ encoded_txt = shiny::eventReactive(input$hash_generate,
                                      t <- learnrhash::encode_obj(user_state)
                                      
                                      
-                                     response <- httr::GET(paste0("https://de6c-193-224-222-18.ngrok-free.app/echo?msg=", t)) |>
+                                     response <- httr::GET(paste0(api_link, "/echo?msg=", t)) |>
                                        httr::content() |> 
                                        purrr::pluck("msg")
                                      message(response)
