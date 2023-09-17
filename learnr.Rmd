@@ -274,7 +274,7 @@ encoded_txt = shiny::eventReactive(input$hash_generate,
                                        ip = getip::getip()
                                      )
                                      t <- learnrhash::encode_obj(user_state)
-                                     
+                                     message(t)
                                      
                                      response <- httr::GET(paste0(api_link, "/echo?msg=", t)) |>
                                        httr::content() |> 
