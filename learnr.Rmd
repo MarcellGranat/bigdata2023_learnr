@@ -276,8 +276,8 @@ encoded_txt = shiny::eventReactive(input$hash_generate,
                                      t <- learnrhash::encode_obj(user_state)
                                      message(t)
                                      
-                                     response <- httr::GET(paste0(api_link, "/echo?msg=", t)) |>
-                                       httr::content() |> 
+                                     response <- httr::GET(paste0(api_link, "/echo?msg=", t)) %>%
+                                       httr::content() %>%
                                        purrr::pluck("msg")
                                      message(response)
                                      if (!is.null(response)) {
@@ -389,6 +389,80 @@ question2("Melyik a hamis?",
           answer("Az `apply` soronként vagy oszloponként végzi el a megadott műveletet."),
           answer("Lehet fibonacci sorozatot készíteni `lapply` segítségével.")
 )
+```
+
+## Problem Set 2
+
+A `fertility_df` és a `tidyverse` csomag már be van töltve az aktuális session-be. Készítsen egy olyan wide elrendezésű data.framet, amelyben az oszlopok: `decade`, `AUT`, `HUN`, `SVK` és azt mutatja meg, hogy ezen 3 országban melyik évtizedben mekkora volt a évenként mért termékenységi ráták mediánja (az órán tanult függvényekből dolgozzon, és egyetlen pipe-lánc legyen az output).
+
+Várt output:
+
+```{r echo=FALSE}
+tibble::tribble(
+     ~decade,  ~AUT,  ~HUN,  ~SVK,
+        1960, 2.695,  1.91, 2.815,
+        1970,  1.87,  2.05,  2.48,
+        1980, 1.495,   1.8,  2.25,
+        1990, 1.455, 1.605, 1.595,
+        2000, 1.395,  1.32, 1.245,
+        2010,  1.46, 1.425, 1.425,
+        2020,  1.46,  1.56,  1.61
+     ) %>% 
+  print()
+```
+
+```{r prepare-fertility, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+fertility_df <- read_csv("https://stats.oecd.org/sdmx-json/data/DP_LIVE/.FERTILITY.../OECD?contentType=csv&detail=code&separator=comma&csv-lang=en")
+```
+
+```{r ps2_1, exercise = TRUE, exercise.setup = "prepare-fertility"}
+fertility_df
+```
+
+
+
+
+## Problem Set 3
+
+Az `economania_df` és a `tidyverse` csomag már be van töltve az aktuális session-be. Hozzon létre a táblázatban olyan új oszlopokat, amelyben megadja szerzőnként a cikkek számát (**n**), majd az **EKB**-t, illetve a **Fed**-et említő cikkeik arányát.
+
+Várt output első két sora:
+
+
+```{r prepare-economania, echo=FALSE}
+library(tidyverse)
+economania_df <- read_csv("https://gist.githubusercontent.com/MarcellGranat/e33c618e4b0cf57771514d207de3dfc0/raw/5a34f45b703e54a8584489468a1af89ca22978b0/gistfile1.txt") %>% 
+  select(-1) %>% 
+  group_by(author) %>% 
+  filter(author != "Chaoyi Chen") %>% 
+  summarise(posts = list(text))
+```
+
+```{r echo=FALSE, comment="", message=FALSE, warning=FALSE}
+economania_df <- read_csv("https://gist.githubusercontent.com/MarcellGranat/e33c618e4b0cf57771514d207de3dfc0/raw/5a34f45b703e54a8584489468a1af89ca22978b0/gistfile1.txt") %>% 
+  select(-1) %>% 
+  group_by(author) %>% 
+  filter(author != "Chaoyi Chen") %>% 
+  summarise(posts = list(text))
+
+out <- tibble::tribble(
+            ~author, ~n,               ~fed,              ~ecb,
+       "Banai Ádám", 12,  0.166666666666667, 0.166666666666667,
+  "Baranyai Eszter", 23, 0.0869565217391304, 0.130434782608696
+  )
+
+economania_df %>% 
+  left_join(out) %>% 
+  head(2) %>% 
+  print()
+
+```
+
+
+
+```{r ps3_1, exercise = TRUE, exercise.setup = "prepare-economania"}
+economania_df
 ```
 
 

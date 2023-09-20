@@ -8,10 +8,12 @@
 # install.packages("rmarkdown")
 # install.packages("learnr")
 # install.packages("devtools")
+# install.packages("httr")
 # devtools::install_github("rundel/learnrhash")
 # install.packages("tidyverse")
 # devtools::install_github("rstudio/gradethis")
 # install.packages("shinyalert")
+unlink("repo", recursive = TRUE)
 git2r::clone(url = "https://github.com/MarcellGranat/bigdata2023_learnr.git", local_path = "repo")
 rmarkdown::run("repo/learnr.Rmd")
 ```
