@@ -399,15 +399,15 @@ Várt output:
 
 ```{r echo=FALSE}
 tibble::tribble(
-     ~decade,  ~AUT,  ~HUN,  ~SVK,
-        1960, 2.695,  1.91, 2.815,
-        1970,  1.87,  2.05,  2.48,
-        1980, 1.495,   1.8,  2.25,
-        1990, 1.455, 1.605, 1.595,
-        2000, 1.395,  1.32, 1.245,
-        2010,  1.46, 1.425, 1.425,
-        2020,  1.46,  1.56,  1.61
-     ) %>% 
+  ~decade,  ~AUT,  ~HUN,  ~SVK,
+  1960, 2.695,  1.91, 2.815,
+  1970,  1.87,  2.05,  2.48,
+  1980, 1.495,   1.8,  2.25,
+  1990, 1.455, 1.605, 1.595,
+  2000, 1.395,  1.32, 1.245,
+  2010,  1.46, 1.425, 1.425,
+  2020,  1.46,  1.56,  1.61
+) %>% 
   print()
 ```
 
@@ -420,15 +420,11 @@ fertility_df <- read_csv("https://stats.oecd.org/sdmx-json/data/DP_LIVE/.FERTILI
 fertility_df
 ```
 
-
-
-
 ## Problem Set 3
 
 Az `economania_df` és a `tidyverse` csomag már be van töltve az aktuális session-be. Hozzon létre a táblázatban olyan új oszlopokat, amelyben megadja szerzőnként a cikkek számát (**n**), majd az **EKB**-t, illetve a **Fed**-et említő cikkeik arányát.
 
 Várt output első két sora:
-
 
 ```{r prepare-economania, echo=FALSE}
 library(tidyverse)
@@ -447,10 +443,10 @@ economania_df <- read_csv("https://gist.githubusercontent.com/MarcellGranat/e33c
   summarise(posts = list(text))
 
 out <- tibble::tribble(
-            ~author, ~n,               ~fed,              ~ecb,
-       "Banai Ádám", 12,  0.166666666666667, 0.166666666666667,
+  ~author, ~n,               ~fed,              ~ecb,
+  "Banai Ádám", 12,  0.166666666666667, 0.166666666666667,
   "Baranyai Eszter", 23, 0.0869565217391304, 0.130434782608696
-  )
+)
 
 economania_df %>% 
   left_join(out) %>% 
@@ -459,11 +455,26 @@ economania_df %>%
 
 ```
 
-
-
 ```{r ps3_1, exercise = TRUE, exercise.setup = "prepare-economania"}
 economania_df
 ```
 
+## Problem Set 4
 
+A `yield_df` már be van töltve. Az órai munkával ellentétben a szpred értéke lett késleltetve, ezért `yield_diff_l4`-nek jelöltük a félreértések elkerülése végett. Készítsen egy logit modellt, ami az 1990 előtti (90 még legyen benne) és egyet, ami az 1990 utáni (90 már ne legyen benne) megfigyelésekre van illesztve. A `pROC`, `broom` és `ggplot2` csomagok segítségvel készítse el a két modell ROC görbéjét. Elvárt output:
 
+```{r prepare-logit, echo=FALSE, warning=FALSE, message=FALSE}
+library(magrittr)
+library(tidyverse)
+library(pROC)
+library(broom)
+library(rvest)
+
+yield_df <- read_rds("https://github.com/MarcellGranat/bigdata2023_learnr/raw/main/yield_df.rds")
+```
+
+![](images/CleanShot 2023-10-12 at 11.45.09@2x.png){width="90%"}
+
+```{r ps4_1, exercise = TRUE, exercise.setup = "prepare-logit"}
+yield_df
+```
