@@ -42,7 +42,7 @@ grader <- function(solution) {
   })
 }
 
-api_link <- "https://dc22-193-224-222-18.ngrok-free.app"
+api_link <- "https://3563-193-224-222-18.ngrok-free.app"
 ```
 
 # Problem Sets
@@ -473,7 +473,7 @@ library(rvest)
 yield_df <- read_rds("https://github.com/MarcellGranat/bigdata2023_learnr/raw/main/yield_df.rds")
 ```
 
-![](images/CleanShot 2023-10-12 at 11.45.09@2x.png){width="90%"}
+![](images/CleanShot%202023-10-12%20at%2011.45.09@2x.png){width="90%"}
 
 ```{r ps4_1, exercise = TRUE, exercise.setup = "prepare-logit"}
 yield_df
