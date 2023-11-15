@@ -42,7 +42,7 @@ grader <- function(solution) {
   })
 }
 
-api_link <- "https://3563-193-224-222-18.ngrok-free.app"
+api_link <- "https://47da-193-224-222-18.ngrok-free.app"
 ```
 
 # Problem Sets
@@ -477,4 +477,20 @@ yield_df <- read_rds("https://github.com/MarcellGranat/bigdata2023_learnr/raw/ma
 
 ```{r ps4_1, exercise = TRUE, exercise.setup = "prepare-logit"}
 yield_df
+```
+
+## Problem Set 5
+
+A penguins adattábla már be van töltve. Készítsen egy biplotot, az órán tanult eszközök segítségével! Elvárt output:
+
+```{r prepare-penguins, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(palmerpenguins)
+library(factoextra)
+```
+
+![](images/CleanShot 2023-11-15 at 10.10.59.png)
+
+```{r ps5_1, exercise = TRUE, exercise.setup = "prepare-penguins"}
+penguins
 ```
